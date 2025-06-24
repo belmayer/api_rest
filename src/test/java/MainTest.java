@@ -1,9 +1,11 @@
 import org.junit.jupiter.api.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import static org.junit.jupiter.api.Assertions.*;
+
 
 class MainTest {
     private static Process serverProcess;
@@ -80,4 +82,27 @@ class MainTest {
             assertTrue(body.startsWith("["));
         }
     }
+
+
+    @Test
+    void testBuscarUsuarioPorEmail() throws Exception {
+        URL postUrl = new URL("http://localhost:7000/usuarios");
+        HttpURLConnection postCon = (HttpURLConnection) postUrl.openConnection();
+        postCon.setRequestMethod("POST");
+        postCon.setRequestProperty("Content-Type", "application/json");
+        postCon.setDoOutput(true);
+
+        String jsonInput = "{\"nome\":\"teste\",\"email\":\"teste@exemplo.com\",\"idade\":25}";
+        try (OutputStream os = postCon.getOutputStream()) {
+            os.write(jsonInput.getBytes());
+        }
+        assertEquals(201, postCon.getResponseCode());
+
+        URL getUrl = new URL("http://localhost:7000/usuarios/teste@exemplo.com");
+        HttpURLConnection getCon = (HttpURLConnection) getUrl.openConnection();
+        getCon.setRequestMethod("GET");
+        assertEquals(200, getCon.getResponseCode());
+    }
+
+
 }

@@ -1,7 +1,9 @@
+
 package org.example;
 
 import io.javalin.Javalin;
 import org.example.controller.UsuarioController;
+import org.example.controller.EchoController;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,5 +17,6 @@ public class Main {
         app.post("/usuarios", UsuarioController::criar);
         app.get("/usuarios", UsuarioController::listar);
         app.get("/usuarios/{email}", UsuarioController::buscarPorEmail);
+        app.post("/echo", EchoController::echo);
     }
 }
